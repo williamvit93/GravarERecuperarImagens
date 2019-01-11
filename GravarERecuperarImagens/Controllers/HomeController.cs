@@ -1,30 +1,67 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using GravarRecuperarImagens.Models;
 
-namespace GravarERecuperarImagens.Controllers
+namespace GravarRecuperarImagens.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
+        private readonly Repositorio repo;
+
+        public HomeController()
+        {
+            repo = new Repositorio();
+        }
+
+        public ActionResult ListarImagens()
+        {
+            var resultado = repo.GetImagens();
+            if (resultado != null)
+            {
+                return View(resultado);
+
+            }
+            return View();
+
+        }
+
+        public ActionResult ImportarImagem()
         {
             return View();
         }
 
-        public ActionResult About()
+
+        [HttpPost]
+        public ActionResult ImportarImagem(HttpPostedFileBase request)
         {
-            ViewBag.Message = "Your application description page.";
+            if (Request.Files[0].ContentLength > 0)
+            {
+                foreach (string upload in Request.Files)
+                {
+                    if (!(Request.Files[upload] != null && Request.Files[upload].ContentLength > 0)) continue;
+
+                    var imagem = new Imagem(Request.Files[upload]);
+                    repo.Add(imagem.Img);
+                }
+                if (!string.IsNullOrEmpty(Imagem.MsgErro))
+                    ModelState.AddModelError("Upload", Imagem.MsgErro);
+                else
+                    ViewBag.Message = "Arquivo salvo com sucesso!!";
+            }
+            else
+                ModelState.AddModelError("Upload", "Importe seus arquivos!!");
 
             return View();
         }
 
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
+        //Salvar a imagem na pasta do servidor
+        //var fileName = Path.GetFileName(file.FileName);
+        //var path = Path.Combine(Server.MapPath("~/Content/Upload"), fileName);
+        //file.SaveAs(path);
+        //ModelState.Clear();
     }
 }

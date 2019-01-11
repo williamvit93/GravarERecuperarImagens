@@ -1,0 +1,41 @@
+﻿@model GravarRecuperarImagens.Models.Imagem
+
+@{
+    ViewBag.Title = "Importar Imagem";
+}
+
+<h2>Importar Imagem</h2>
+<p>
+    @Html.ActionLink("Listar Imagens", "ListarImagens")
+</p>
+
+@using (Html.BeginForm("ImportarImagem", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary();
+    <div class="alert alert-success alert-dismissible" role="alert">@ViewBag.Message</div>
+
+    <div class="form-horizontal">
+        <h4>Importar Imagens</h4>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Upload</label>
+            <div class="col-md-10">
+                <input type="file" name="someOtherFile" class="form-control" />
+                <span class="field-validation-error" >Tamanho máximo 3mb</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" name="Submit" id="btnSubmit" value="Upload Files" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
