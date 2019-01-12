@@ -30,20 +30,20 @@ namespace GravarRecuperarImagens.Models
 
         private static string ValidarImagem(HttpPostedFileBase file)
         {
-            int MaxContentLength = 1024 * 1024 * 3; //3 MB
+            int MaxContentLength = 1024 * 1024 * 10; //3 MB
             string[] AllowedFileExtensions = new string[] { ".jpg", ".gif", ".png", ".pdf" };
 
             if (!AllowedFileExtensions.Contains(file.FileName.Substring(file.FileName.LastIndexOf('.'))))
             {
-                return MsgErro = "Por favor, carregue arquivos do tipo: " + string.Join(", ", AllowedFileExtensions);
+                return MsgErro = "Por favor, importe arquivos do tipo: " + string.Join(", ", AllowedFileExtensions);
             }
 
             else if (file.ContentLength > MaxContentLength)
             {
-                return MsgErro = "Seu arquivo é muito grande, o tamanho máximo permitido é: " + MaxContentLength + " MB";
+                return MsgErro = "O Tamanho do arquivo excede o limite permitido de 10MB";
             }
 
-            return "";
+            return MsgErro = "";
 
         }
     }

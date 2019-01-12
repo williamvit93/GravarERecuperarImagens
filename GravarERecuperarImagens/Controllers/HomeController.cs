@@ -45,16 +45,21 @@ namespace GravarRecuperarImagens.Controllers
                     if (!(Request.Files[upload] != null && Request.Files[upload].ContentLength > 0)) continue;
 
                     var imagem = new Imagem(Request.Files[upload]);
-                    repo.Add(imagem.Img);
+
+                    if (!string.IsNullOrEmpty(Imagem.MsgErro))
+                    {
+                        ModelState.AddModelError("Upload", Imagem.MsgErro);
+                        return View();
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Arquivo salvo com sucesso!!";
+                        repo.Add(imagem.Img);
+                    }
                 }
-                if (!string.IsNullOrEmpty(Imagem.MsgErro))
-                    ModelState.AddModelError("Upload", Imagem.MsgErro);
-                else
-                    ViewBag.Message = "Arquivo salvo com sucesso!!";
             }
             else
                 ModelState.AddModelError("Upload", "Importe seus arquivos!!");
-
             return View();
         }
 

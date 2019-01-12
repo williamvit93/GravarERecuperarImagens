@@ -6,25 +6,32 @@
 
 <h2>Importar Imagem</h2>
 <p>
-    @Html.ActionLink("Listar Imagens", "ListarImagens")
+    <a class="btn btn-xs btn-info" href="@Url.Action("ListarImagens")">Listar Imagens</a>
 </p>
+
 
 @using (Html.BeginForm("ImportarImagem", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary();
-    <div class="alert alert-success alert-dismissible" role="alert">@ViewBag.Message</div>
+    <div id="panelDanger" class="panel panel-danger">
+        <ul id="validationError" class="list-group-item-danger">
+            @Html.ValidationSummary()
+        </ul>
+    </div>
+    <div id="panelSuccess" class="panel panel-success">
+        <ul class="list-group-item-success">
+            @ViewBag.Message
+        </ul>
+    </div>
 
     <div class="form-horizontal">
-        <h4>Importar Imagens</h4>
         <hr />
-        @Html.ValidationSummary(true)
+        @*@Html.ValidationSummary(false)*@
 
         <div class="form-group">
             <label class="control-label col-md-2">Upload</label>
             <div class="col-md-10">
-                <input type="file" name="someOtherFile" class="form-control" />
-                <span class="field-validation-error" >Tamanho máximo 3mb</span>
+                <input type="file" name="someOtherFile" class="form-control" onchange="Javascript:VerificaTamanhoArquivo();" />
             </div>
         </div>
 
@@ -39,3 +46,23 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+    <script>
+        function VerificaTamanhoArquivo() {
+            var fi = document.getElementById('file');
+            var maxFileSize = 1024 * 1024 * 10; // 10MB -> 4 * 1024 * 1024
+
+            if (fi.files.length > 0) {
+
+                for (var i = 0; i <= fi.files.length - 1; i++) {
+
+                    var fsize = fi.files.item(i).size;
+
+                    if (fsize > maxFileSize) {
+                        $('#validationError').text("O Tamanho do arquivo excede o limite permitido de 10MB");
+                        fi.value = null;
+                    }
+                }
+            }
+        }
+    </script>
